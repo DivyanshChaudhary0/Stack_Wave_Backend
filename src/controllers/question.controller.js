@@ -9,11 +9,48 @@ const commentModel = require("../models/comment.model");
 const allQuestionsController = async function(req,res){
     try{
         const {_id} = req.user;
+        const { filter, page = 1, limit = 3 } = req.query;
+
         if(!_id){
             return res.status(401).json({ message: "Unauthorized" })
+        }        
+
+        if(filter){
+            let questions = null
+
+            if(filter === "Newest"){
+                questions = await questionModel.find()
+                .skip((page - 1) * limit)
+                .limit(3)
+                .sort({ createdAt: -1 })
+                .populate("authorId",["username","avatar"]);
+            }
+            else if(filter === "Top Voted"){
+                questions = await questionModel.find()
+                .skip((page - 1) * limit)
+                .limit(3)
+                .sort({ votes: -1 })
+                .populate("authorId",["username","avatar"]);
+            }
+            else{
+                questions = await questionModel.find({ answersCount: 0 })
+                .skip((page - 1) * limit)
+                .limit(3)
+                .populate("authorId",["username","avatar"]);
+            }
+
+            return res.status(200).json({
+                questions,
+                message: "Questions fetched successfully"
+            })
+
         }
 
-        const questions = await questionModel.find().sort({ createdAt: -1 }).populate("authorId",["username","avatar"]);
+        const questions = await questionModel.find()
+            .skip((page - 1) * limit)
+            .limit(3)
+            .sort({ createdAt: -1 })
+            .populate("authorId",["username","avatar"]);
 
         res.status(200).json({
             questions,
