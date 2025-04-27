@@ -93,23 +93,26 @@ const updateUserController = async function(req,res){
 
 const leaderBoardController = async function(req,res){
     try{
-        const topUsers = await userModel.find({}, "username avatar reputation").sort({ reputation: -1 }).limit(10);
 
-        const leaderboardData = await Promise.all(topUsers.map( async(user) => {
-            let questionCount = await questionModel.countDocuments({ authorId: user?._id })
-            let answerCount = await answerModel.countDocuments({ authorId: user?._id })
+        const {limit = 3} = req.query;
 
-            return {
-                username: user?.username,
-                avatar: user?.avatar,
-                reputation: user?.reputation,
-                questions: questionCount,
-                answers: answerCount, 
-            }
-        }))
+        const topUsers = await userModel.find().sort({reputation : - 1}).limit(limit);
+
+        // const leaderboardData = await Promise.all(topUsers.map( async(user) => {
+        //     let questionCount = await questionModel.countDocuments({ authorId: user?._id })
+        //     let answerCount = await answerModel.countDocuments({ authorId: user?._id })
+
+        //     return {
+        //         username: user?.username,
+        //         avatar: user?.avatar,
+        //         reputation: user?.reputation,
+        //         questions: questionCount,
+        //         answers: answerCount, 
+        //     }
+        // }))
 
         res.status(200).json({
-            data: leaderboardData,
+            data: topUsers,
             message: "data fetched successfully"
         })
 
