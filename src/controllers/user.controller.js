@@ -94,9 +94,9 @@ const updateUserController = async function(req,res){
 const leaderBoardController = async function(req,res){
     try{
 
-        const {limit = 3} = req.query;
+        const {limit = 8, page = 1} = req.query;
 
-        const topUsers = await userModel.find().sort({reputation : - 1}).limit(limit);
+        const topUsers = await userModel.find().sort({reputation : - 1}).limit(limit).skip((page - 1)*limit);
 
         // const leaderboardData = await Promise.all(topUsers.map( async(user) => {
         //     let questionCount = await questionModel.countDocuments({ authorId: user?._id })
