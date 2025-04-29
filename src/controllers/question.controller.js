@@ -258,7 +258,7 @@ const upVoteController = async function(req,res){
         else if(alreadyDownVoted){
             question.downvotedBy = question.downvotedBy.filter((id) => id.toString() !== userId.toString());
             question.upvotedBy.push(userId);
-            question.votes++;
+            question.votes+=2;
         }
         else{
             question.upvotedBy.push(userId);
@@ -314,7 +314,7 @@ const downVoteController = async function(req,res){
         else if(alreadyUpVoted){
             question.upvotedBy = question.upvotedBy.filter((id) => id.toString() !== userId.toString());
             question.downvotedBy.push(userId);
-            question.votes--;
+            question.votes-=2;
         }
         else{
             question.downvotedBy.push(userId);

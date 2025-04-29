@@ -228,7 +228,7 @@ const upVoteAnswerController = async function(req,res){
 
         if(userId.toString() === isAnswerExist.authorId.toString()){
             return res.status(403).json({
-                message: "User cannot vote on their own answer"
+                message: "You cannot vote on your own answer"
             })
         }
 
@@ -290,7 +290,7 @@ const downVoteAnswerController = async function(req,res){
 
         if(userId.toString() === isAnswerExist.authorId.toString()){
             return res.status(403).json({
-                message: "User cannot vote on their own answer"
+                message: "You cannot vote on your own answer"
             })
         }
 
