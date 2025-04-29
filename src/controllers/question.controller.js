@@ -225,7 +225,7 @@ const deleteController = async function(req,res){
 
 const upVoteController = async function(req,res){
     try{
-        const questionId = req.body?.id;
+        const { questionId } = req.params;
         const userId = req?.user?._id;
 
         if(!questionId){
@@ -269,7 +269,7 @@ const upVoteController = async function(req,res){
 
         res.status(200).json({
             message: "upVote successfully",
-            question
+            newVotes: question.votes
         })
     }
     catch(err){
@@ -281,8 +281,10 @@ const upVoteController = async function(req,res){
 
 const downVoteController = async function(req,res){
     try{
-        const questionId = req.body?.id;
+        const { questionId } = req.params;
         const userId = req?.user?._id;
+        console.log(questionId);
+        
 
         if(!questionId){
             return res.status(400).json({
@@ -325,7 +327,7 @@ const downVoteController = async function(req,res){
 
         res.status(200).json({
             message: "downVote successfully",
-            question
+            newVotes: question.votes
         })
     }
     catch(err){

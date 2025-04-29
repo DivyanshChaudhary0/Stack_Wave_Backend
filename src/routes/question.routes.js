@@ -8,21 +8,17 @@ const {allQuestionsController, createQuestionController, getOneController, updat
 
 router.get("/", userAuth, allQuestionsController);   // get-All questions
 
-
 router.post("/", userAuth, questionValidation, createQuestionController);  // create a question
-
 
 router.get("/:id", userAuth, getOneController);   // get one question
 
-
 router.put("/:id", userAuth, updateController)     // update question
-
 
 router.delete("/:id", userAuth, deleteController)    // delete question
 
-router.post("/upVote", userAuth, upVoteController);
+router.post("/upVote/:questionId", userAuth, upVoteController);
 
-router.post("/downVote", userAuth, downVoteController);
+router.post("/downVote/:questionId", userAuth, downVoteController);
 
 
 module.exports = router;
