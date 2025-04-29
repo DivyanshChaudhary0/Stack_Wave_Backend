@@ -227,6 +227,12 @@ const upVoteController = async function(req,res){
     try{
         const questionId = req.body?.id;
         const userId = req?.user?._id;
+
+        if(!questionId){
+            return res.status(400).json({
+                message: "Question not found"
+            })
+        }
         
         const question  = await questionModel.findById(questionId);
 
@@ -236,7 +242,29 @@ const upVoteController = async function(req,res){
             })
         }
 
-        question.votes++;
+        if(!question){
+            return res.status(404).json({
+                message: "Question not found"
+            })
+        }
+
+        const alreadyUpVoted = question.upvotedBy.some((id) => id.toString() === userId.toString());
+        const alreadyDownVoted = question.downvotedBy.some((id) => id.toString() === userId.toString());
+
+        if(alreadyUpVoted){
+            question.upvotedBy = question.upvotedBy.filter((id) => id.toString() !== userId.toString());
+            question.votes--;
+        }
+        else if(alreadyDownVoted){
+            question.downvotedBy = question.downvotedBy.filter((id) => id.toString() !== userId.toString());
+            question.upvotedBy.push(userId);
+            question.votes++;
+        }
+        else{
+            question.upvotedBy.push(userId);
+            question.votes++;
+        }
+
         await question.save();
 
         res.status(200).json({
@@ -255,6 +283,12 @@ const downVoteController = async function(req,res){
     try{
         const questionId = req.body?.id;
         const userId = req?.user?._id;
+
+        if(!questionId){
+            return res.status(400).json({
+                message: "Question not found"
+            })
+        }
         
         const question  = await questionModel.findById(questionId);
 
@@ -270,7 +304,23 @@ const downVoteController = async function(req,res){
             })
         }
 
-        question.votes--;
+        const alreadyUpVoted = question.upvotedBy.some((id) => id.toString() === userId.toString());
+        const alreadyDownVoted = question.downvotedBy.some((id) => id.toString() === userId.toString());
+
+        if(alreadyDownVoted){
+            question.downvotedBy = question.downvotedBy.filter((id) => id.toString() !== userId.toString());
+            question.votes++;
+        }
+        else if(alreadyUpVoted){
+            question.upvotedBy = question.upvotedBy.filter((id) => id.toString() !== userId.toString());
+            question.downvotedBy.push(userId);
+            question.votes--;
+        }
+        else{
+            question.downvotedBy.push(userId);
+            question.votes--;
+        }
+
         await question.save();
 
         res.status(200).json({
@@ -284,6 +334,7 @@ const downVoteController = async function(req,res){
         })
     }
 }
+
 
 module.exports = {
     allQuestionsController,
