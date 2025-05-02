@@ -14,6 +14,12 @@ const roomRoutes = require("./routes/room.routes");
 const commentRoutes = require("./routes/comment.routes");
 const leaderBoardRoutes = require("./routes/leaderBoard.routes");
 
+
+app.get("/api/ping", (req, res) => {
+    console.log("Pinged at", new Date().toISOString());
+    res.status(200).send("pong");
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/questions", questionRoutes);
